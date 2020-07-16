@@ -6,6 +6,7 @@ This is a companion project to The App Brewery's Complete Flutter Development Bo
 
 ![App Brewery Banner](https://github.com/londonappbrewery/Images/blob/master/AppBreweryBanner.png)
 
+This is my version of the app.
 
 ![Image description](https://raw.githubusercontent.com/ExequielGonzalez/CryptoTicker/master/screenshots/Screenshot_1590124396.png)
-![Image description](https://raw.githubusercontent.com/ExequielGonzalez/CryptoTicker/master/screenshots/Screenshot_1590124398.png)
+
