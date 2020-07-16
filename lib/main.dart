@@ -1,3 +1,4 @@
+import 'package:bitcoin_ticker/constants.dart';
 import 'package:flutter/material.dart';
 import 'price_screen.dart';
 
@@ -7,9 +8,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-          primaryColor: Colors.lightBlue,
-          scaffoldBackgroundColor: Colors.white),
+          primaryColor: kWidgetBackgroundColor,
+          scaffoldBackgroundColor: kBackgroundColor),
       home: PriceScreen(),
     );
   }

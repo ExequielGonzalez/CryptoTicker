@@ -1,4 +1,5 @@
 const List<String> currenciesList = [
+  'ARS',
   'AUD',
   'BRL',
   'CAD',
@@ -26,6 +27,15 @@ const List<String> cryptoList = [
   'BTC',
   'ETH',
   'LTC',
+  'USDT',
 ];
 
-class CoinData {}
+class CoinData {
+  String cryptoCurrency;
+  String currency;
+  double conversionRatio = 0;
+
+  CoinData({this.cryptoCurrency, this.currency});
+
+  double getConversionRatio() => conversionRatio;
+}

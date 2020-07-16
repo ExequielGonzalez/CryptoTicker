@@ -1,4 +1,10 @@
+import 'package:bitcoin_ticker/card_widget.dart';
+import 'package:bitcoin_ticker/network_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:bitcoin_ticker/coin_data.dart';
+import 'package:bitcoin_ticker/picker.dart';
+
+import 'package:bitcoin_ticker/constants.dart';
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -6,46 +12,78 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
-  @override
+  NetworkHelper networkHelper;
+  List<CoinData> dataCrypto = [];
+  String selectedCurrency = 'ARS';
+
+  void initState() {
+    super.initState();
+    networkHelper = NetworkHelper();
+    for (int i = 0; i < cryptoList.length; i++) {
+      dataCrypto.add(CoinData(cryptoCurrency: cryptoList[i], currency: 'ARS'));
+    }
+    getConversionRatio(dataCrypto);
+  }
+
+  void getConversionRatio(List<CoinData> dataCryptoCurrency) async {
+    for (CoinData crypto in dataCryptoCurrency) {
+      var data = await networkHelper.getConversionData(
+          crypto.cryptoCurrency, crypto.currency);
+      setState(() {
+        crypto.conversionRatio = data['rate'];
+      });
+    }
+  }
+
+  List<Widget> cardWidgetList() {
+    List<CardWidget> cardWidgets = [];
+    for (int i = 0; i < cryptoList.length; i++) {
+      cardWidgets.add(CardWidget(
+          cryptoCurrency: dataCrypto[i].cryptoCurrency,
+          conversionRatio: dataCrypto[i].conversionRatio,
+          selectedCurrency: dataCrypto[i].currency));
+    }
+    return cardWidgets;
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('🤑 Coin Ticker'),
+        title: Text('Coin Ticker'),
+        centerTitle: true,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: Card(
-              color: Colors.lightBlueAccent,
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-                child: Text(
-                  '1 BTC = ? USD',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Container(
-            height: 150.0,
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(bottom: 30.0),
-            color: Colors.lightBlue,
+      body:
+          Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: cardWidgetList(),
+        ),
+        Expanded(
+          child: Container(
             child: null,
           ),
-        ],
-      ),
+        ),
+        Container(
+          height: 75.0,
+          alignment: Alignment.center,
+          padding: EdgeInsets.only(bottom: 15.0),
+          color: kWidgetBackgroundColor,
+          child: Picker(
+            onPressed: (var newValue) async {
+              setState(() {
+                selectedCurrency = newValue.toString();
+              });
+              for (CoinData crypto in dataCrypto) {
+                setState(() {
+                  crypto.currency = selectedCurrency;
+                });
+              }
+              getConversionRatio(dataCrypto);
+            },
+            currency: selectedCurrency,
+          ),
+        ),
+      ]),
     );
   }
 }
